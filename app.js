@@ -9,7 +9,7 @@ const port= process.env.PORT||3000;
 
 const wss=new WebSocket.Server({port},logcb('listen:', port));
 wss.on('connection', ws=>{
-    console.log("on connection")
+//    console.log("on connection")
     ws.once('message', msg=>{
         const [VERSION]=msg;
         const id=msg.slice(1, 17);
@@ -20,7 +20,7 @@ wss.on('connection', ws=>{
         const host= ATYP==1? msg.slice(i,i+=4).join('.')://IPV4
             (ATYP==2? new TextDecoder().decode(msg.slice(i+1, i+=1+msg.slice(i,i+1).readUInt8()))://domain
                 (ATYP==3? msg.slice(i,i+=16).reduce((s,b,i,a)=>(i%2?s.concat(a.slice(i-1,i+1)):s), []).map(b=>b.readUInt16BE(0).toString(16)).join(':'):''));//ipv6
-
+        console.log("conn:"+host+":"+port);
         logcb('conn:', host,port);
         ws.send(new Uint8Array([VERSION, 0]));
         const duplex=createWebSocketStream(ws);
